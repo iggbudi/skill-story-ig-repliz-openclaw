@@ -30,19 +30,17 @@ Ketika user kirim gambar atau video ke chat:
 
 Jika user hanya kirim URL (bukan file), lanjut ke langkah 2b.
 
-### 2a. Upload file lokal ke ImgBB
+### 2. Upload ke Cloudinary (gambar & video)
 
 ```bash
-python3 /root/.openclaw/skills/ig-story/scripts/upload_imgbb.py --file "/path/to/file.jpg"
+python3 /root/.openclaw/skills/ig-story/scripts/upload_cloudinary.py --file "/path/to/file.jpg"
+python3 /root/.openclaw/skills/ig-story/scripts/upload_cloudinary.py --file "/path/to/video.mp4"
 ```
 
-Output: `{ "success": true, "url": "https://i.ibb.co/..." }`
+Output: `{ "success": true, "url": "https://res.cloudinary.com/...", "type": "image|video", "thumbnail": "..." }`
 
-### 2b. Upload dari URL ke ImgBB (jika user kirim URL)
-
-```bash
-python3 /root/.openclaw/skills/ig-story/scripts/upload_imgbb.py --url "https://example.com/image.jpg"
-```
+- Untuk gambar: `thumbnail` = `url` (sama)
+- Untuk video: `thumbnail` = URL frame pertama otomatis (`.jpg`)
 
 ### 3. Konversi waktu ke ISO8601 Asia/Jakarta
 
@@ -52,9 +50,11 @@ python3 /root/.openclaw/skills/ig-story/scripts/upload_imgbb.py --url "https://e
 
 ### 4. Post ke Instagram Story via Repliz
 
+Gunakan `url` dan `thumbnail` dari output Cloudinary:
+
 ```bash
 python3 /root/.openclaw/skills/ig-story/scripts/post_story.py \
-  --url "https://i.ibb.co/..." \
+  --url "<cloudinary_url>" \
   --type "image" \
   --schedule "2026-03-16T15:00:00+07:00"
 ```
@@ -62,9 +62,9 @@ python3 /root/.openclaw/skills/ig-story/scripts/post_story.py \
 Untuk video:
 ```bash
 python3 /root/.openclaw/skills/ig-story/scripts/post_story.py \
-  --url "https://i.ibb.co/video.mp4" \
+  --url "<cloudinary_video_url>" \
   --type "video" \
-  --thumb "https://i.ibb.co/thumb.jpg" \
+  --thumb "<cloudinary_thumbnail_url>" \
   --schedule "2026-03-16T15:00:00+07:00"
 ```
 
@@ -110,7 +110,8 @@ with open(state_path, "w") as f:
 
 ## Catatan
 
-- ImgBB API key: tersimpan di `scripts/upload_imgbb.py`
+- Cloudinary credentials: tersimpan di `scripts/upload_cloudinary.py`
 - Account ID Instagram diambil dari `/root/autopost-threads/config.json` → `accounts.instagram`
-- Format didukung: JPG, PNG, MP4
+- Format didukung: JPG, PNG, MP4, MOV
 - Rasio ideal story IG: 9:16 (1080×1920px)
+- Semua media diupload ke folder `openclaw/` di Cloudinary
