@@ -1,11 +1,11 @@
 # ig-story — OpenClaw Skill
 
-Skill untuk post atau schedule konten ke **Instagram Story** via [Repliz](https://repliz.com), dengan upload media otomatis ke **ImgBB**.
+Skill untuk post atau schedule konten ke **Instagram Story** via [Repliz](https://repliz.com), dengan upload media otomatis ke **Cloudinary** (support gambar & video).
 
 ## Cara kerja
 
 1. User kirim gambar/video ke bot Telegram dengan caption `story` atau `/story`
-2. Bot upload media ke ImgBB → dapat URL publik
+2. Bot upload media ke Cloudinary → dapat URL publik
 3. Bot post URL ke Repliz → terjadwal ke Instagram Story
 
 ## Setup
@@ -17,19 +17,16 @@ Letakkan folder ini di:
 ~/.openclaw/skills/ig-story/
 ```
 
-### 2. Set API key ImgBB
+### 2. Set kredensial Cloudinary
 
-Edit `scripts/upload_imgbb.py`, ganti:
+Edit `scripts/upload_cloudinary.py`, ganti:
 ```python
-IMGBB_API_KEY = os.environ.get("IMGBB_API_KEY", "YOUR_IMGBB_API_KEY_HERE")
+CLOUD_NAME = "your_cloud_name"
+API_KEY    = "your_api_key"
+API_SECRET = "your_api_secret"
 ```
 
-Atau set environment variable:
-```bash
-export IMGBB_API_KEY=your_api_key_here
-```
-
-Daftar gratis di [imgbb.com](https://imgbb.com) → Account → API.
+Daftar gratis di [cloudinary.com](https://cloudinary.com) → Dashboard → API Keys.
 
 ### 3. Set kredensial Repliz
 
@@ -49,21 +46,21 @@ Pastikan file `/root/autopost-threads/config.json` berisi:
 
 | Pesan | Aksi |
 |-------|------|
-| Kirim foto + caption `story` | Post segera |
-| Kirim foto + caption `story jam 15:00` | Jadwalkan jam 15:00 WIB |
-| Kirim foto + caption `story besok jam 09:00` | Jadwalkan besok jam 09:00 |
-| `/story` | Post foto yang baru dikirim |
+| Kirim foto/video + caption `story` | Post segera |
+| Kirim foto/video + caption `story jam 15:00` | Jadwalkan jam 15:00 WIB |
+| Kirim foto/video + caption `story besok jam 09:00` | Jadwalkan besok jam 09:00 |
+| `/story` | Post media yang baru dikirim |
 
 ## Struktur file
 
 ```
 ig-story/
-├── SKILL.md                  ← instruksi untuk OpenClaw agent
+├── SKILL.md                      ← instruksi untuk OpenClaw agent
 ├── README.md
 ├── scripts/
-│   ├── upload_imgbb.py       ← upload media ke ImgBB
-│   └── post_story.py         ← post story ke Repliz
-└── state/                    ← diabaikan git (lokal saja)
+│   ├── upload_cloudinary.py      ← upload gambar & video ke Cloudinary
+│   └── post_story.py             ← post story ke Repliz
+└── state/                        ← diabaikan git (lokal saja)
     └── history.json
 ```
 
