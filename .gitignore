@@ -1,3 +1,4 @@
 state/
 scripts/__pycache__/
 *.pyc
+.env
