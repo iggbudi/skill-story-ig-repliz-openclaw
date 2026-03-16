@@ -21,9 +21,19 @@ import mimetypes
 from urllib import request, parse, error
 from urllib.request import Request
 
-CLOUD_NAME = "deekufqtv"
-API_KEY = "597225576184566"
-API_SECRET = "Ph6Pfu9X2LcEaszn791hBd2MQgk"
+# Load .env jika ada
+_env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+if os.path.exists(_env_path):
+    with open(_env_path) as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
+
+CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME", "YOUR_CLOUD_NAME")
+API_KEY    = os.environ.get("CLOUDINARY_API_KEY", "YOUR_API_KEY")
+API_SECRET = os.environ.get("CLOUDINARY_API_SECRET", "YOUR_API_SECRET")
 
 
 def detect_type(file_path: str) -> str:
